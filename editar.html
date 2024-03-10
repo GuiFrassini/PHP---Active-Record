@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
+    <title>Editar um jogador</title>
+    <style>
+
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <h2 class="form-title">Editar Jogador</h2>
+    <form action="setPHP.php" method="POST">
+        <input type="hidden" name="action" value="delete">
+        <input type="hidden" name="id" value="{{id}}">
+        <label>Nome:</label><br>
+        <input type="text" name="name" value="{{name}}">
+        <br><br>
+        <label>Username:</label><br>
+        <input type="text" name="username" value="{{username}}">
+        <br><br>
+        <label>Email:</label><br>
+        <input type="email" name="email" value="{{email}}">
+        <br><br>
+        <label>Senha:</label><br>
+        <input type="senha" name="senha" value="{{senha}}">
+        <br><br>
+        <label>Data de Registro:</label><br>
+        <input type="text" name="createdata" value="{{createdata}}">
+        <br>
+        <br>
+
+        <button type="submit" name="action" value="update" style="background:#add8e6;padding: 8px; border-radius: 5px;margin-right: 10px">Salvar alteração</button>
+        <p>Visualizar Cadastros:</p>
+        <button type="submit" name="action" value="listar" style="background:#add8e6;padding: 8px; border-radius: 5px;margin-right: 10px" >Voltar</button>
+
+    </form>
+
+
+</div>
+</body>
+</html>
