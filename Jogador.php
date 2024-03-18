@@ -4,14 +4,14 @@ use pdo_poo\Database;
 
 class jogador
 {
-    private int $id;
-    private string $name;
-    private string $username;
-    private string $email;
-    private string $senha;
-    private string $createdata;
+    private ?int $id;
+    private ?string $name;
+    private ?string $username;
+    private ?string $email;
+    private ?string $senha;
+    private ?string $createdata;
 
-    public function __construct($id,$name, $username, $email, $senha, $createdata)
+    public function __construct(?int $id,$name = null, $username = null, $email = null, $senha = null, $createdata = null)
     {
         $this->id = $id;
         $this->name = $name;
@@ -88,62 +88,54 @@ class jogador
         $db = Database::getInstance();
 
         if($this->id){
-
-            $stmt = $db->prepare("UPDATE jogador SET name = :name ,username = :username ,email = :email, senha = :senha, data_cadastro =:data_cadastro
+            $stmt = $db->prepare("UPDATE jogador SET name = :name ,username = :username ,email = :email, senha = :senha, createdata =:createdata
                     WHERE id = :id");
 
             $stmt -> bindParam(':id',$this->id);
         }
         else{
-            $stmt = $db->prepare ("INSERT INTO jogador (name,username,email,senha,data_cadastro)
-                    VALUES (:name,:username,:email,:senha,:data_cadastro)");
+            $stmt = $db->prepare ("INSERT INTO jogador (name,username,email,senha,createdata)
+                    VALUES (:name,:username,:email,:senha,:createdata)");
 
         }
+        $name = $this->name;
+        $username = $this->username;
+        $email = $this->email;
+        $senha = $this->senha;
+        $createdata = $this->createdata;
 
         $stmt -> bindParam(':name',$name);
         $stmt -> bindParam(':username',$username);
         $stmt -> bindParam(':email',$email);
         $stmt -> bindParam(':senha',$senha);
-        $stmt -> bindParam(':data_cadastro',$data_cadastro);
+        $stmt -> bindParam(':createdata',$createdata);
 
         $stmt->execute();
         echo '<button><a href="index.html">Voltar</a></button>';
     }
 
-    public function listaJogadores()
+    public static function listaJogadores()
     {
         $db = Database::getInstance();
+        $jogadores = [];
 
         $stmt = $db->prepare('Select * from jogador');
         $stmt ->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        return $result;
-    }
+        foreach ($result as $data){
+            $jogador = new jogador(
+                $data['id'],
+                $data['name'],
+                $data['username'],
+                $data['email'],
+                $data['senha'],
+                $data['createdata']
+            );
+            $jogadores[] = $jogador;
 
-
-    public function updateJogador(jogador $jogador) {
-        $db = Database::getInstance();
-
-        $id = $jogador->getId();
-        $name = $jogador->getName();
-        $username = $jogador->getUsername();
-        $email = $jogador->getEmail();
-        $senha = $jogador->getSenha();
-        $data_cadastro = $jogador->getCreatedata();
-
-        $stmt = $db->prepare("UPDATE jogador SET name = :name ,username = :username ,email = :email, senha = :senha, data_cadastro =:data_cadastro
-                    WHERE id = :id");
-
-        $stmt -> bindParam(':id',$id);
-        $stmt -> bindParam(':name',$name);
-        $stmt -> bindParam(':username',$username);
-        $stmt -> bindParam(':email',$email);
-        $stmt -> bindParam(':senha',$senha);
-        $stmt -> bindParam(':data_cadastro',$data_cadastro);
-
-        $stmt ->execute();
-        echo '<button><a href="visualizar.html">Voltar</a></button>';
+        }
+        return $jogadores;
     }
 
     public function geterID($id)
@@ -156,23 +148,23 @@ class jogador
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($result){
-            $jogador = new jogador();
+            $jogador = new jogador($id);
             $jogador -> setId($result['id']);
             $jogador -> setName($result['name']);
             $jogador -> setUsername($result['username']);
             $jogador -> setEmail($result['email']);
             $jogador -> setSenha($result['senha']);
-            $jogador -> setCreatedata($result['data_cadastro']);
+            $jogador -> setCreatedata($result['createdata']);
             return $jogador;
         }
         return null;
 
     }
-    public function excluirUsuario(jogador $jogador)
+    public function excluirUsuario()
     {
         $db = Database::getInstance();
 
-        $id = $jogador->getId();
+        $id = $this->getId();
 
         $stmt = $db->prepare("delete from jogador where id = :id");
         $stmt ->bindParam('id',$id);
